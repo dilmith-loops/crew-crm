@@ -4,6 +4,7 @@
     </IfModule>
 
     RewriteEngine On
+    RewriteBase /crm/
 
     # Prevent direct access to sensitive files
     RewriteRule ^\.env - [F,L,NC]
