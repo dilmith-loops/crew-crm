@@ -5,6 +5,12 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Normalize SCRIPT_NAME so Laravel routes cleanly under /crm without /public/
+if (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/crm')) {
+    $_SERVER['SCRIPT_NAME'] = '/crm/index.php';
+    $_SERVER['PHP_SELF'] = '/crm/index.php';
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
     require $maintenance;
