@@ -5,7 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Invoice System</title>
+    <title>{{ config('app.name', 'Crew CRM') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     
     <!-- PWA Web App Meta Tags -->
@@ -14,8 +17,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Loops CRM">
-    <link rel="apple-touch-icon" href="{{ asset('images/pwa-icon-192.png') }}">
+    <meta name="apple-mobile-web-app-title" content="Crew CRM">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -129,7 +132,7 @@
         @unless(View::hasSection('no_sidebar'))
         <aside class="w-64 bg-dark text-white flex-shrink-0 hidden md:flex flex-col">
             <div class="p-4 flex items-center justify-center h-20 border-b border-gray-700">
-                <img src="{{ asset('images/logo_loops_light.png') }}" alt="Loops Integrated" class="h-12 w-auto">
+                <img src="{{ asset('images/logo_loops_light.png') }}" alt="Crew CRM" class="h-12 w-auto">
             </div>
             <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
                 <a href="{{ route('dashboard') }}"
@@ -243,7 +246,7 @@
                class="fixed inset-y-0 left-0 z-50 w-72 bg-dark text-white flex flex-col md:hidden shadow-2xl"
                style="display: none;">
             <div class="p-4 flex items-center justify-between h-20 border-b border-gray-700">
-                <img src="{{ asset('images/logo_loops_light.png') }}" alt="Loops Integrated" class="h-10 w-auto">
+                <img src="{{ asset('images/logo_loops_light.png') }}" alt="Crew CRM" class="h-10 w-auto">
                 <button @click="mobileSidebarOpen = false" class="text-gray-400 hover:text-white p-2 rounded-lg focus:outline-none">
                     <i class="fas fa-times text-xl"></i>
                 </button>
