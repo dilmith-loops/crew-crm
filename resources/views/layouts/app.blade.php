@@ -131,13 +131,12 @@
 <body class="bg-gray-100 text-gray-800" 
       x-data="{ 
           mobileSidebarOpen: false, 
-          sidebarCollapsed: localStorage.getItem('crew_sidebar_collapsed') === 'true',
+          sidebarCollapsed: false,
           toggleSidebar() {
               if (window.innerWidth < 768) {
                   this.mobileSidebarOpen = !this.mobileSidebarOpen;
               } else {
                   this.sidebarCollapsed = !this.sidebarCollapsed;
-                  localStorage.setItem('crew_sidebar_collapsed', this.sidebarCollapsed);
               }
           }
       }">
@@ -578,7 +577,8 @@
             .catch(error => console.error('Error:', error));
         }
 
-        // Clear dark mode preference if previously set
+        // Clear sidebar collapsed and dark mode preference if previously set
+        localStorage.removeItem('crew_sidebar_collapsed');
         localStorage.removeItem('staff_dark_mode');
         document.body.classList.remove('dark');
 
