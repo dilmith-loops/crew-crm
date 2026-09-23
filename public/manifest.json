@@ -1,7 +1,7 @@
 {
-  "name": "Loops Integrated System",
-  "short_name": "Loops CRM",
-  "description": "Loops Integrated CRM, Petty Cash & Invoicing Management System",
+  "name": "CREW CRM",
+  "short_name": "CREW CRM",
+  "description": "CREW CRM, Petty Cash & Invoicing Management System",
   "id": "/",
   "start_url": "/",
   "scope": "/",

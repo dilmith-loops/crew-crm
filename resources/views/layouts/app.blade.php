@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Crew CRM') }}</title>
+    <title>{{ config('app.name', 'CREW CRM') }}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
@@ -17,7 +17,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Crew CRM">
+    <meta name="apple-mobile-web-app-title" content="CREW CRM">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -125,104 +125,180 @@
     @stack('head')
 </head>
 
-<body class="bg-gray-100 text-gray-800" x-data="{ mobileSidebarOpen: false }">
+<body class="bg-gray-100 text-gray-800" 
+      x-data="{ 
+          mobileSidebarOpen: false, 
+          sidebarCollapsed: localStorage.getItem('crew_sidebar_collapsed') === 'true',
+          toggleSidebar() {
+              if (window.innerWidth < 768) {
+                  this.mobileSidebarOpen = !this.mobileSidebarOpen;
+              } else {
+                  this.sidebarCollapsed = !this.sidebarCollapsed;
+                  localStorage.setItem('crew_sidebar_collapsed', this.sidebarCollapsed);
+              }
+          }
+      }">
 
     <div class="flex h-screen overflow-hidden">
         <!-- Desktop Sidebar -->
         @unless(View::hasSection('no_sidebar'))
-        <aside class="w-64 bg-dark text-white flex-shrink-0 hidden md:flex flex-col">
-            <div class="p-4 flex items-center justify-center h-20 border-b border-gray-700">
-                <img src="{{ asset('images/logo_loops_light.png') }}" alt="Crew CRM" class="h-12 w-auto">
+        <aside :class="sidebarCollapsed ? 'w-20' : 'w-64'" 
+               class="bg-dark text-white flex-shrink-0 hidden md:flex flex-col transition-all duration-300 ease-in-out select-none border-r border-gray-800 shadow-xl relative z-30">
+            <!-- Sidebar Header / Logo & Collapse Button -->
+            <div class="p-3 flex items-center justify-between h-20 border-b border-gray-700/80 transition-all duration-300 relative overflow-hidden">
+                <div class="flex items-center transition-all duration-300 overflow-hidden" 
+                     :class="sidebarCollapsed ? 'justify-center w-full cursor-pointer group' : 'pl-2'"
+                     @click="if (sidebarCollapsed) toggleSidebar()"
+                     :title="sidebarCollapsed ? 'Click to expand sidebar' : ''">
+                    <img src="{{ asset('images/logo_loops_light.png') }}" alt="CREW CRM" 
+                         class="transition-all duration-300 object-contain group-hover:scale-105" 
+                         :class="sidebarCollapsed ? 'h-8 max-w-[38px]' : 'h-12 w-auto'">
+                </div>
+                <!-- Inline Collapse Toggle Button for Desktop -->
+                <button type="button" 
+                        @click="toggleSidebar()" 
+                        x-show="!sidebarCollapsed"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 scale-75"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        class="hidden md:flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700/80 focus:outline-none transition-colors cursor-pointer mr-1"
+                        title="Collapse Sidebar">
+                    <i class="fas fa-angles-left text-sm"></i>
+                </button>
             </div>
-            <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 px-2.5 py-4 space-y-1.5 overflow-y-auto overflow-x-hidden">
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('dashboard') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                    <i class="fas fa-home w-6"></i>
-                    <span>Dashboard</span>
+                    title="Dashboard"
+                    class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                    :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                    <i class="fas fa-home text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Dashboard</span>
                 </a>
                 <a href="{{ route('petty-cash.index') }}"
-                    class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('petty-cash.*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                    <i class="fas fa-wallet w-6"></i>
-                    <span>Petty Cash</span>
+                    title="Petty Cash"
+                    class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('petty-cash.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                    :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                    <i class="fas fa-wallet text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Petty Cash</span>
                 </a>
 
                 @if(auth()->check() && auth()->user()->role !== 'Staff')
                     <a href="{{ route('customers.index') }}"
-                        class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('customers.*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                        <i class="fas fa-users w-6"></i>
-                        <span>Customers</span>
+                        title="Customers"
+                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('customers.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                        <i class="fas fa-users text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Customers</span>
                     </a>
                     <a href="{{ route('deals.index') }}"
-                        class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('deals.*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                        <i class="fas fa-funnel-dollar w-6"></i>
-                        <span>Deals</span>
+                        title="Deals"
+                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('deals.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                        <i class="fas fa-funnel-dollar text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Deals</span>
                     </a>
                     <a href="{{ route('jobs.index') }}"
-                        class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('jobs.*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                        <i class="fas fa-briefcase w-6"></i>
-                        <span>Jobs</span>
+                        title="Jobs"
+                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('jobs.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                        <i class="fas fa-briefcase text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Jobs</span>
                     </a>
                     <a href="{{ route('estimates.index') }}"
-                        class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ (request()->routeIs('estimates.*') && request('from') !== 'invoice') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                        <i class="fas fa-file-invoice w-6"></i>
-                        <span>Estimates</span>
+                        title="Estimates"
+                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ (request()->routeIs('estimates.*') && request('from') !== 'invoice') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                        <i class="fas fa-file-invoice text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Estimates</span>
                     </a>
                     <a href="{{ route('invoices.index') }}"
-                        class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ (request()->is('invoices*') || request('from') === 'invoice') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                        <i class="fas fa-file-invoice-dollar mr-3 w-5"></i> Invoices
+                        title="Invoices"
+                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ (request()->is('invoices*') || request('from') === 'invoice') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                        <i class="fas fa-file-invoice-dollar text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Invoices</span>
                     </a>
                     <a href="{{ route('reports.index') }}"
-                        class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('reports.*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                        <i class="fas fa-chart-bar w-6"></i>
-                        <span>Reports</span>
+                        title="Reports"
+                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('reports.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                        <i class="fas fa-chart-bar text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Reports</span>
                     </a>
 
                     @if(auth()->check() && auth()->user()->hasAdminPrivileges())
+                        <div class="pt-2 pb-1" x-show="!sidebarCollapsed">
+                            <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Admin</p>
+                        </div>
+                        <div class="my-1 border-t border-gray-700/60" x-show="sidebarCollapsed"></div>
+
                         <a href="{{ route('users.index') }}"
-                            class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->is('users*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                            <i class="fas fa-users-cog mr-3 w-5"></i> Users
+                            title="Users"
+                            class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->is('users*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                            :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                            <i class="fas fa-users-cog text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                            <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Users</span>
                         </a>
 
                         <a href="{{ route('activities.index') }}"
-                            class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->routeIs('activities.*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                            <i class="fas fa-history mr-3 w-5"></i> Activity Log
+                            title="Activity Log"
+                            class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('activities.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                            :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                            <i class="fas fa-history text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                            <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Activity Log</span>
                         </a>
 
                         <a href="{{ route('settings.index') }}"
-                            class="flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition {{ request()->is('settings*') ? 'bg-gray-700 text-brand-pink' : '' }}">
-                            <i class="fas fa-cog mr-3 w-5"></i> Settings
+                            title="Settings"
+                            class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->is('settings*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                            :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
+                            <i class="fas fa-cog text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
+                            <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Settings</span>
                         </a>
                     @endif
                 @endif
             </nav>
-            <div class="px-3 pb-3">
-                <button type="button" class="pwa-install-btn flex w-full items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-brand-purple to-brand-pink hover:opacity-90 text-white text-xs font-bold rounded-lg shadow-sm transition-all" title="Install App">
-                    <i class="fas fa-download"></i>
-                    <span>Install App</span>
+
+            <!-- PWA Install Button in Desktop Sidebar -->
+            <div class="px-2.5 pb-2.5">
+                <button type="button" 
+                        class="pwa-install-btn flex w-full items-center justify-center gap-2 bg-gradient-to-r from-brand-purple to-brand-pink hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
+                        :class="sidebarCollapsed ? 'p-2.5' : 'px-3 py-2.5'"
+                        title="Install CREW CRM App">
+                    <i class="fas fa-download text-sm"></i>
+                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate">Install App</span>
                 </button>
             </div>
-            <div class="p-4 border-t border-gray-700">
-                <div class="flex items-center space-x-2">
-                    <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name ?? 'Admin' }}&background=random"
-                        alt="User" class="w-8 h-8 rounded-full">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">{{ Auth::user()->name ?? 'Admin User' }}</p>
-                        <p class="text-xs text-gray-400 truncate">{{ Auth::user()->email ?? 'admin@example.com' }}</p>
+
+            <!-- User Profile & Session Section -->
+            <div class="p-3 border-t border-gray-700 bg-gray-900/40">
+                <div class="flex items-center" :class="sidebarCollapsed ? 'flex-col gap-2' : 'justify-between space-x-2'">
+                    <div class="flex items-center min-w-0" :class="sidebarCollapsed ? 'justify-center' : 'space-x-2'">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'User') }}&background=8035ca&color=fff"
+                            alt="User" class="w-8 h-8 rounded-full border border-brand-pink/40 flex-shrink-0"
+                            :title="sidebarCollapsed ? '{{ Auth::user()->name ?? 'User' }} ({{ Auth::user()->role ?? '' }})' : ''">
+                        <div class="min-w-0" x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms>
+                            <p class="text-xs font-semibold truncate text-white leading-tight">{{ Auth::user()->name ?? 'Admin User' }}</p>
+                            <p class="text-[11px] text-gray-400 truncate leading-tight mt-0.5">{{ Auth::user()->role ?? 'Staff' }}</p>
+                        </div>
                     </div>
-                    <div class="flex items-center space-x-1">
-                        <button type="button" onclick="document.getElementById('changePasswordModal').classList.remove('hidden')" class="text-gray-400 hover:text-white p-1" title="Change Password">
-                            <i class="fas fa-key"></i>
+                    <div class="flex items-center" :class="sidebarCollapsed ? 'flex-col gap-1.5' : 'space-x-1'">
+                        <button type="button" onclick="document.getElementById('changePasswordModal').classList.remove('hidden')" class="text-gray-400 hover:text-white p-1 rounded hover:bg-gray-700 transition-colors" title="Change Password">
+                            <i class="fas fa-key text-xs"></i>
                         </button>
-                        <form action="{{ route('logout') }}" method="POST">
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
-                            <button type="submit" class="text-gray-400 hover:text-white p-1" title="Logout">
-                                <i class="fas fa-sign-out-alt"></i>
+                            <button type="submit" class="text-gray-400 hover:text-white p-1 rounded hover:bg-gray-700 transition-colors" title="Logout">
+                                <i class="fas fa-sign-out-alt text-xs"></i>
                             </button>
                         </form>
                     </div>
                 </div>
             </div>
         </aside>
+        @endunless
 
         <!-- Mobile Drawer Sidebar (Sliding) -->
         <div x-show="mobileSidebarOpen" 
@@ -246,7 +322,7 @@
                class="fixed inset-y-0 left-0 z-50 w-72 bg-dark text-white flex flex-col md:hidden shadow-2xl"
                style="display: none;">
             <div class="p-4 flex items-center justify-between h-20 border-b border-gray-700">
-                <img src="{{ asset('images/logo_loops_light.png') }}" alt="Crew CRM" class="h-10 w-auto">
+                <img src="{{ asset('images/logo_loops_light.png') }}" alt="CREW CRM" class="h-10 w-auto">
                 <button @click="mobileSidebarOpen = false" class="text-gray-400 hover:text-white p-2 rounded-lg focus:outline-none">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -315,7 +391,7 @@
             <div class="px-3 pb-3">
                 <button type="button" class="pwa-install-btn flex w-full items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-brand-purple to-brand-pink text-white text-sm font-bold rounded-xl shadow-md active:scale-95 transition-all" title="Install App">
                     <i class="fas fa-download text-base"></i>
-                    <span>Install Loops App</span>
+                    <span>Install CREW CRM App</span>
                 </button>
             </div>
             <div class="p-4 border-t border-gray-700 bg-gray-900/50">
@@ -344,8 +420,11 @@
                 <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
                     <div class="flex items-center flex-1 mr-4 min-w-0">
                         @unless(View::hasSection('no_sidebar'))
-                        <button @click="mobileSidebarOpen = !mobileSidebarOpen" 
-                                class="md:hidden text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 focus:outline-none transition-colors mr-2">
+                        <!-- Responsive Sidebar Toggle (Mobile Drawer & Desktop Collapse) -->
+                        <button type="button" 
+                                @click="toggleSidebar()" 
+                                class="text-gray-600 hover:text-gray-900 p-2 rounded-xl hover:bg-gray-100 focus:outline-none transition-all mr-2.5 flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
+                                title="Toggle Sidebar">
                             <i class="fas fa-bars text-lg"></i>
                         </button>
                         @endunless
@@ -360,7 +439,7 @@
                             <i class="fas fa-arrows-rotate text-brand-purple text-xs sm:text-sm"></i>
                             <span class="hidden sm:inline">Refresh</span>
                         </button>
-                        <button type="button" class="pwa-install-btn inline-flex px-2.5 py-1.5 sm:px-3 sm:py-1.5 bg-gradient-to-r from-brand-purple to-brand-pink text-white text-xs font-bold rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all items-center gap-1.5" title="Install Loops CRM">
+                        <button type="button" class="pwa-install-btn inline-flex px-2.5 py-1.5 sm:px-3 sm:py-1.5 bg-gradient-to-r from-brand-purple to-brand-pink text-white text-xs font-bold rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all items-center gap-1.5" title="Install CREW CRM">
                             <i class="fas fa-download text-xs"></i>
                             <span>Install</span>
                         </button>

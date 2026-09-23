@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - {{ config('app.name', 'Crew CRM') }}</title>
+    <title>Login - {{ config('app.name', 'CREW CRM') }}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
@@ -16,7 +16,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Crew CRM">
+    <meta name="apple-mobile-web-app-title" content="CREW CRM">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,7 +39,7 @@
     <div class="bg-white/95 backdrop-blur-md p-6 sm:p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/20 transform transition-all duration-300 hover:shadow-white/10 my-auto">
         <div class="flex flex-col items-center mb-6 sm:mb-10">
             <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-sm mb-4 sm:mb-6">
-                <img src="{{ asset('images/logo_loops.png') }}" alt="Crew CRM" class="h-12 sm:h-16 w-auto">
+                <img src="{{ asset('images/logo_loops.png') }}" alt="CREW CRM" class="h-12 sm:h-16 w-auto">
             </div>
             <h2 class="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight text-center">Welcome Back</h2>
             <p class="text-gray-500 mt-1 sm:mt-2 text-xs sm:text-sm font-medium">Please enter your credentials</p>
@@ -130,7 +130,7 @@
             <div class="mt-4 pwa-install-btn">
                 <button type="button" class="pwa-install-trigger w-full flex items-center justify-center gap-2 py-3 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs sm:text-sm font-bold rounded-xl border border-gray-200 shadow-2xs hover:border-gray-300 transition-all active:scale-98">
                     <i class="fas fa-download text-brand-purple"></i>
-                    <span>Install Loops CRM App</span>
+                    <span>Install CREW CRM App</span>
                 </button>
             </div>
         </form>
