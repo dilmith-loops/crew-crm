@@ -55,6 +55,9 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -142,120 +145,120 @@
     <div class="flex h-screen overflow-hidden">
         <!-- Desktop Sidebar -->
         @unless(View::hasSection('no_sidebar'))
-        <aside :class="sidebarCollapsed ? 'w-20' : 'w-64'" 
-               class="bg-dark text-white flex-shrink-0 hidden md:flex flex-col transition-all duration-300 ease-in-out select-none border-r border-gray-800 shadow-xl relative z-30">
+        <aside class="w-64 bg-dark text-white flex-shrink-0 hidden md:flex flex-col transition-all duration-300 ease-in-out select-none border-r border-gray-800 shadow-xl relative z-30"
+               :class="{ 'w-20': sidebarCollapsed, 'w-64': !sidebarCollapsed }">
             <!-- Sidebar Header / Logo & Collapse Button -->
-            <div class="p-3 flex items-center justify-between h-20 border-b border-gray-700/80 transition-all duration-300 relative overflow-hidden">
-                <div class="flex items-center transition-all duration-300 overflow-hidden" 
-                     :class="sidebarCollapsed ? 'justify-center w-full cursor-pointer group' : 'pl-2'"
-                     @click="if (sidebarCollapsed) toggleSidebar()"
-                     :title="sidebarCollapsed ? 'Click to expand sidebar' : ''">
-                    <img src="{{ asset('images/logo_loops_light.png') }}" alt="CREW CRM" 
-                         class="transition-all duration-300 object-contain group-hover:scale-105" 
-                         :class="sidebarCollapsed ? 'h-8 max-w-[38px]' : 'h-12 w-auto'">
+            <div class="px-3 flex items-center justify-between h-20 border-b border-gray-700/80 transition-all duration-300 relative overflow-hidden">
+                <!-- Expanded: Full Logo + Collapse Button -->
+                <div x-show="!sidebarCollapsed" class="flex items-center justify-between w-full">
+                    <img src="{{ asset('images/logo_loops_light.png') }}" alt="CREW CRM" class="h-11 w-auto pl-1">
+                    <button type="button" 
+                            @click="toggleSidebar()" 
+                            class="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700/80 focus:outline-none transition-colors cursor-pointer"
+                            title="Collapse Sidebar">
+                        <i class="fas fa-angles-left text-sm"></i>
+                    </button>
                 </div>
-                <!-- Inline Collapse Toggle Button for Desktop -->
-                <button type="button" 
-                        @click="toggleSidebar()" 
-                        x-show="!sidebarCollapsed"
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-75"
-                        x-transition:enter-end="opacity-100 scale-100"
-                        class="hidden md:flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700/80 focus:outline-none transition-colors cursor-pointer mr-1"
-                        title="Collapse Sidebar">
-                    <i class="fas fa-angles-left text-sm"></i>
-                </button>
+                <!-- Collapsed: Square App Mark & Expand Button -->
+                <div x-show="sidebarCollapsed" x-cloak class="flex items-center justify-center w-full">
+                    <button type="button" 
+                            @click="toggleSidebar()" 
+                            class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 shadow-sm transition-all cursor-pointer group"
+                            title="Expand Sidebar">
+                        <img src="{{ asset('images/pwa-icon-192.png') }}" alt="CREW CRM" class="w-6 h-6 rounded-md object-cover group-hover:scale-110 transition-transform">
+                    </button>
+                </div>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex-1 px-2.5 py-4 space-y-1.5 overflow-y-auto overflow-x-hidden">
                 <a href="{{ route('dashboard') }}"
-                    title="Dashboard"
-                    class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                    class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                     :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                    <i class="fas fa-home text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Dashboard</span>
+                    <i class="fas fa-home text-base flex-shrink-0 w-6 text-center"></i>
+                    <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Dashboard</span>
+                    <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Dashboard</div>
                 </a>
                 <a href="{{ route('petty-cash.index') }}"
-                    title="Petty Cash"
-                    class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('petty-cash.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                    class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('petty-cash.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                     :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                    <i class="fas fa-wallet text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Petty Cash</span>
+                    <i class="fas fa-wallet text-base flex-shrink-0 w-6 text-center"></i>
+                    <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Petty Cash</span>
+                    <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Petty Cash</div>
                 </a>
 
                 @if(auth()->check() && auth()->user()->role !== 'Staff')
                     <a href="{{ route('customers.index') }}"
-                        title="Customers"
-                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('customers.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('customers.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                         :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                        <i class="fas fa-users text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Customers</span>
+                        <i class="fas fa-users text-base flex-shrink-0 w-6 text-center"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Customers</span>
+                        <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Customers</div>
                     </a>
                     <a href="{{ route('deals.index') }}"
-                        title="Deals"
-                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('deals.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('deals.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                         :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                        <i class="fas fa-funnel-dollar text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Deals</span>
+                        <i class="fas fa-funnel-dollar text-base flex-shrink-0 w-6 text-center"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Deals</span>
+                        <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Deals</div>
                     </a>
                     <a href="{{ route('jobs.index') }}"
-                        title="Jobs"
-                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('jobs.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('jobs.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                         :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                        <i class="fas fa-briefcase text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Jobs</span>
+                        <i class="fas fa-briefcase text-base flex-shrink-0 w-6 text-center"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Jobs</span>
+                        <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Jobs</div>
                     </a>
                     <a href="{{ route('estimates.index') }}"
-                        title="Estimates"
-                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ (request()->routeIs('estimates.*') && request('from') !== 'invoice') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ (request()->routeIs('estimates.*') && request('from') !== 'invoice') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                         :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                        <i class="fas fa-file-invoice text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Estimates</span>
+                        <i class="fas fa-file-invoice text-base flex-shrink-0 w-6 text-center"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Estimates</span>
+                        <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Estimates</div>
                     </a>
                     <a href="{{ route('invoices.index') }}"
-                        title="Invoices"
-                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ (request()->is('invoices*') || request('from') === 'invoice') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ (request()->is('invoices*') || request('from') === 'invoice') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                         :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                        <i class="fas fa-file-invoice-dollar text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Invoices</span>
+                        <i class="fas fa-file-invoice-dollar text-base flex-shrink-0 w-6 text-center"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Invoices</span>
+                        <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Invoices</div>
                     </a>
                     <a href="{{ route('reports.index') }}"
-                        title="Reports"
-                        class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('reports.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                        class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('reports.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                         :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                        <i class="fas fa-chart-bar text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Reports</span>
+                        <i class="fas fa-chart-bar text-base flex-shrink-0 w-6 text-center"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Reports</span>
+                        <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Reports</div>
                     </a>
 
                     @if(auth()->check() && auth()->user()->hasAdminPrivileges())
                         <div class="pt-2 pb-1" x-show="!sidebarCollapsed">
                             <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Admin</p>
                         </div>
-                        <div class="my-1 border-t border-gray-700/60" x-show="sidebarCollapsed"></div>
+                        <div class="my-1 border-t border-gray-700/60" x-show="sidebarCollapsed" x-cloak></div>
 
                         <a href="{{ route('users.index') }}"
-                            title="Users"
-                            class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->is('users*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                            class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->is('users*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                             :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                            <i class="fas fa-users-cog text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                            <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Users</span>
+                            <i class="fas fa-users-cog text-base flex-shrink-0 w-6 text-center"></i>
+                            <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Users</span>
+                            <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Users</div>
                         </a>
 
                         <a href="{{ route('activities.index') }}"
-                            title="Activity Log"
-                            class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('activities.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                            class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->routeIs('activities.*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                             :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                            <i class="fas fa-history text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                            <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Activity Log</span>
+                            <i class="fas fa-history text-base flex-shrink-0 w-6 text-center"></i>
+                            <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Activity Log</span>
+                            <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Activity Log</div>
                         </a>
 
                         <a href="{{ route('settings.index') }}"
-                            title="Settings"
-                            class="flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->is('settings*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
+                            class="group relative flex items-center rounded-xl hover:bg-gray-700/80 transition-all duration-200 {{ request()->is('settings*') ? 'bg-gray-700 text-brand-pink font-semibold shadow-sm' : 'text-gray-300 hover:text-white' }}"
                             :class="sidebarCollapsed ? 'justify-center px-2 py-3' : 'px-3.5 py-3'">
-                            <i class="fas fa-cog text-base flex-shrink-0" :class="sidebarCollapsed ? '' : 'w-6'"></i>
-                            <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate ml-2 text-sm">Settings</span>
+                            <i class="fas fa-cog text-base flex-shrink-0 w-6 text-center"></i>
+                            <span x-show="!sidebarCollapsed" class="truncate ml-2.5 text-sm whitespace-nowrap">Settings</span>
+                            <div x-show="sidebarCollapsed" x-cloak class="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-gray-700">Settings</div>
                         </a>
                     @endif
                 @endif
@@ -267,24 +270,24 @@
                         class="pwa-install-btn flex w-full items-center justify-center gap-2 bg-gradient-to-r from-brand-purple to-brand-pink hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
                         :class="sidebarCollapsed ? 'p-2.5' : 'px-3 py-2.5'"
                         title="Install CREW CRM App">
-                    <i class="fas fa-download text-sm"></i>
-                    <span x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms class="truncate">Install App</span>
+                    <i class="fas fa-download text-sm flex-shrink-0"></i>
+                    <span x-show="!sidebarCollapsed" class="truncate ml-1">Install App</span>
                 </button>
             </div>
 
             <!-- User Profile & Session Section -->
             <div class="p-3 border-t border-gray-700 bg-gray-900/40">
-                <div class="flex items-center" :class="sidebarCollapsed ? 'flex-col gap-2' : 'justify-between space-x-2'">
-                    <div class="flex items-center min-w-0" :class="sidebarCollapsed ? 'justify-center' : 'space-x-2'">
+                <!-- Expanded User Section -->
+                <div x-show="!sidebarCollapsed" class="flex items-center justify-between space-x-2">
+                    <div class="flex items-center min-w-0 space-x-2">
                         <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'User') }}&background=8035ca&color=fff"
-                            alt="User" class="w-8 h-8 rounded-full border border-brand-pink/40 flex-shrink-0"
-                            :title="sidebarCollapsed ? '{{ Auth::user()->name ?? 'User' }} ({{ Auth::user()->role ?? '' }})' : ''">
-                        <div class="min-w-0" x-show="!sidebarCollapsed" x-transition.opacity.duration.200ms>
+                            alt="User" class="w-8 h-8 rounded-full border border-brand-pink/40 flex-shrink-0">
+                        <div class="min-w-0">
                             <p class="text-xs font-semibold truncate text-white leading-tight">{{ Auth::user()->name ?? 'Admin User' }}</p>
                             <p class="text-[11px] text-gray-400 truncate leading-tight mt-0.5">{{ Auth::user()->role ?? 'Staff' }}</p>
                         </div>
                     </div>
-                    <div class="flex items-center" :class="sidebarCollapsed ? 'flex-col gap-1.5' : 'space-x-1'">
+                    <div class="flex items-center space-x-1">
                         <button type="button" onclick="document.getElementById('changePasswordModal').classList.remove('hidden')" class="text-gray-400 hover:text-white p-1 rounded hover:bg-gray-700 transition-colors" title="Change Password">
                             <i class="fas fa-key text-xs"></i>
                         </button>
@@ -296,11 +299,27 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Collapsed User Section -->
+                <div x-show="sidebarCollapsed" x-cloak class="flex flex-col items-center justify-center gap-2 py-1">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('changePasswordModal').classList.remove('hidden')" title="Change Password">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'User') }}&background=8035ca&color=fff"
+                            alt="User" class="w-8 h-8 rounded-full border border-brand-pink/40">
+                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-dark"></span>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-gray-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-gray-800 transition-colors" title="Logout">
+                            <i class="fas fa-sign-out-alt text-sm"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </aside>
 
         <!-- Mobile Drawer Sidebar (Sliding) -->
         <div x-show="mobileSidebarOpen" 
+             x-cloak
              x-transition:enter="transition-opacity ease-linear duration-200"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -308,18 +327,17 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              class="fixed inset-0 z-40 bg-gray-900/60 backdrop-blur-sm md:hidden" 
-             @click="mobileSidebarOpen = false" 
-             style="display: none;"></div>
+             @click="mobileSidebarOpen = false"></div>
 
         <aside x-show="mobileSidebarOpen"
+               x-cloak
                x-transition:enter="transition ease-in-out duration-300 transform"
                x-transition:enter-start="-translate-x-full"
                x-transition:enter-end="translate-x-0"
                x-transition:leave="transition ease-in-out duration-300 transform"
                x-transition:leave-start="translate-x-0"
                x-transition:leave-end="-translate-x-full"
-               class="fixed inset-y-0 left-0 z-50 w-72 bg-dark text-white flex flex-col md:hidden shadow-2xl"
-               style="display: none;">
+               class="fixed inset-y-0 left-0 z-50 w-72 bg-dark text-white flex flex-col md:hidden shadow-2xl">
             <div class="p-4 flex items-center justify-between h-20 border-b border-gray-700">
                 <img src="{{ asset('images/logo_loops_light.png') }}" alt="CREW CRM" class="h-10 w-auto">
                 <button @click="mobileSidebarOpen = false" class="text-gray-400 hover:text-white p-2 rounded-lg focus:outline-none">
@@ -423,8 +441,8 @@
                         <button type="button" 
                                 @click="toggleSidebar()" 
                                 class="text-gray-600 hover:text-gray-900 p-2 rounded-xl hover:bg-gray-100 focus:outline-none transition-all mr-2.5 flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
-                                title="Toggle Sidebar">
-                            <i class="fas fa-bars text-lg"></i>
+                                :title="sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
+                            <i class="fas fa-bars text-lg" :class="sidebarCollapsed ? 'text-brand-purple' : ''"></i>
                         </button>
                         @endunless
                         <h2 class="text-lg sm:text-xl font-bold text-gray-800 truncate">@yield('header')</h2>
