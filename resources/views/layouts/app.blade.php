@@ -298,7 +298,6 @@
                 </div>
             </div>
         </aside>
-        @endunless
 
         <!-- Mobile Drawer Sidebar (Sliding) -->
         <div x-show="mobileSidebarOpen" 
