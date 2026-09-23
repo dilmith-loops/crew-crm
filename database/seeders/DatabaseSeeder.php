@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(SystemSettingsSeeder::class);
+        $this->call(DummyUserSeeder::class);
     }
 }
